@@ -8,6 +8,8 @@ import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './users/user.model';
 import { Role } from './roles/role.model';
+import { UserRoles } from './user-roles/user-roles.model';
+import { UserRolesModule } from './user-roles/user-roles.module';
 
 @Module({
   imports: [
@@ -23,10 +25,11 @@ import { Role } from './roles/role.model';
       database: process.env.DB_NAME,
       autoLoadModels: true,
       synchronize: true,
-      models: [User, Role],
+      models: [User, Role, UserRoles],
     }),
     UsersModule,
     RolesModule,
+    UserRolesModule
   ],
   controllers: [AppController],
   providers: [AppService],
