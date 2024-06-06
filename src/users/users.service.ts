@@ -15,7 +15,7 @@ export class UsersService {
     private userModel: typeof User,
   ) {}
 
-  async create(user: User): Promise<User> {
+  async create(user: CreateUserDto): Promise<User> {
     return this.userModel.create(user);
   }
 
@@ -31,7 +31,7 @@ export class UsersService {
     });
   }
 
-  async update(id: number, user: User): Promise<void> {
+  async update(id: number, user: UpdateUserDto): Promise<void> {
     await this.userModel.update(user, {
       where: {
         id,
@@ -45,8 +45,10 @@ export class UsersService {
   }
 
   // Validar que el usuario exista y validar la contraseña
-  async validateUser(validateUserDto: ValidateUserDto): Promise<User | null> {
+  async validateUser(validateUserDto: ValidateUserDto): Promise<string> {
     const { email, password } = validateUserDto;
+
+    console.log(email, password);
 
     const user = await this.userModel.findOne({
       where: {
@@ -54,9 +56,14 @@ export class UsersService {
       },
     });
 
-    if (user && await bcrypt.compare(password, user.password)) {
-      return user;
+    if (user) {
+      if (await bcrypt.compare(password, user.password)) {
+        return 'Acceso correcto';
+      } else {
+        return 'Contraseña incorrecta';
+      }
     }
-    return null;
+
+    return 'El usuario no existe';
   }
 }

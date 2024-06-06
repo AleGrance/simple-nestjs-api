@@ -1,4 +1,20 @@
+import { IsNotEmpty, IsString, MinLength } from "class-validator"
+import { Role } from "src/roles/role.model"
+
 export class CreateUserDto {
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(4)
     name: string
-    last_name: string
+
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(4)
+    email: string
+
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(4)
+    password: string
+    roles?: Role[]
 }

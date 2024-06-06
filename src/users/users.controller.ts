@@ -10,13 +10,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: User) {
+  create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
-  }
-
-  @Post('/validateUser')
-  validateUser(@Body() validateUserDto: ValidateUserDto) {
-    return this.usersService.validateUser(validateUserDto);
   }
 
   @Get()
@@ -30,12 +25,19 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: User) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
+  }
+
+  // Validar que el usuario exista y validar la contraseña
+  @Post('/validateUser')
+  validateUser(@Body() validateUserDto: ValidateUserDto) {
+    console.log(validateUserDto);
+    return this.usersService.validateUser(validateUserDto);
   }
 }
