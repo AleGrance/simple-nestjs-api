@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.model';
+import { ValidateUserDto } from './dto/validate-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -10,8 +11,12 @@ export class UsersController {
 
   @Post()
   create(@Body() createUserDto: User) {
-    console.log('Post users', createUserDto);
     return this.usersService.create(createUserDto);
+  }
+
+  @Post('/validateUser')
+  validateUser(@Body() validateUserDto: ValidateUserDto) {
+    return this.usersService.validateUser(validateUserDto);
   }
 
   @Get()
