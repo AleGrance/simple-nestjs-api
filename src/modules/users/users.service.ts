@@ -34,14 +34,20 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User> {
-    return this.userModel.findOne({
+    const userFound = await this.userModel.findOne({
       where: {
         id,
       },
     });
+
+    if (!userFound) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+    
+    return userFound
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<HttpException> {
     const userFound = await this.findOne(id);
 
     if (!userFound) {
@@ -60,10 +66,15 @@ export class UsersService {
       userFound.password = updateUserDto.password;
     }
 
-    return userFound.save();
+    try {
+      userFound.save();
+      return new HttpException('Usuario actualizado correctamente', HttpStatus.OK);
+    } catch (error) {
+      throw new HttpException('Error interno', HttpStatus.SERVICE_UNAVAILABLE);
+    }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<HttpException> {
     const userFound = await this.findOne(id);
 
     if (!userFound) {

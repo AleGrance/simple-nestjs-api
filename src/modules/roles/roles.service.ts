@@ -16,7 +16,10 @@ export class RolesService {
       return await this.roleModel.create(role);
     } catch (error) {
       if (error.name === 'SequelizeUniqueConstraintError') {
-        throw new HttpException("El nombre de rol ingresado ya existe", HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          'El nombre de rol ingresado ya existe',
+          HttpStatus.BAD_REQUEST,
+        );
       }
     }
   }
@@ -26,23 +29,52 @@ export class RolesService {
   }
 
   async findOne(id: number): Promise<Role> {
-    return this.roleModel.findOne({
+    const roleFound = await this.roleModel.findOne({
       where: {
         id,
       },
     });
+
+    if (!roleFound) {
+      throw new HttpException('Rol no encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    return roleFound;
   }
 
-  async update(id: number, role: UpdateRoleDto): Promise<void> {
-    await this.roleModel.update(role, {
-      where: {
-        id,
-      },
-    });
+  async update(id: number, role: UpdateRoleDto): Promise<HttpException> {
+    const roleFound = await this.findOne(id);
+
+    if (!roleFound) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    try {
+      await this.roleModel.update(role, {
+        where: {
+          id,
+        },
+      });
+
+      return new HttpException('Rol actualizado correctamente', HttpStatus.OK);
+
+    } catch (error) {
+      throw new HttpException('Error interno', HttpStatus.SERVICE_UNAVAILABLE);
+    }
   }
 
-  async remove(id: number): Promise<void> {
-    const role = await this.findOne(id);
-    await role.destroy();
+  async remove(id: number): Promise<HttpException> {
+    const roleFound = await this.findOne(id);
+
+    if (!roleFound) {
+      throw new HttpException('Rol no encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    try {
+      await roleFound.destroy();
+      return new HttpException('Rol elimiando correctamente', HttpStatus.OK);
+    } catch (error) {
+      throw new HttpException('Error interno', HttpStatus.SERVICE_UNAVAILABLE);
+    }
   }
 }

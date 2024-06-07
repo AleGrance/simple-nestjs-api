@@ -26,6 +26,8 @@ export class RolesController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.rolesService.update(+id, updateRoleDto);
+    //console.log(this.rolesService.update(+id, updateRoleDto));
+    
   }
 
   @Delete(':id')
