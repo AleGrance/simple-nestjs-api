@@ -1,4 +1,4 @@
-import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 // User model
 import { ValidateUserDto } from './dto/validate-user.dto';
 import { User } from 'src/models/user.model';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,16 @@ export class UsersService {
   ) {}
 
   async create(user: CreateUserDto): Promise<User> {
-    return this.userModel.create(user);
+    try {
+      return await this.userModel.create(user);
+    } catch (error) {
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        throw new HttpException(
+          'El email ingresado ya existe',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
   }
 
   async findAll(): Promise<User[]> {
@@ -31,12 +41,26 @@ export class UsersService {
     });
   }
 
-  async update(id: number, user: UpdateUserDto): Promise<void> {
-    await this.userModel.update(user, {
-      where: {
-        id,
-      },
-    });
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const userFound = await this.findOne(id);
+
+    if (!userFound) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    if (updateUserDto.name) {
+      userFound.name = updateUserDto.name;
+    }
+
+    if (updateUserDto.email) {
+      userFound.email = updateUserDto.email;
+    }
+
+    if (updateUserDto.password) {
+      userFound.password = updateUserDto.password;
+    }
+
+    return userFound.save();
   }
 
   async remove(id: number): Promise<void> {
@@ -46,7 +70,7 @@ export class UsersService {
 
   /**
    * Validar que el usuario exista y validar la contraseña
-   * @param validateUserDto 
+   * @param validateUserDto
    * @returns "Acceso correcto" || "Contraseña incorrecta" || "El usuario no existe"
    */
   async validateUser(validateUserDto: ValidateUserDto): Promise<string> {
@@ -64,7 +88,10 @@ export class UsersService {
       if (await bcrypt.compare(password, user.password)) {
         return 'Acceso correcto';
       } else {
-        throw new HttpException('Contraseña incorrecta', HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          'Contraseña incorrecta',
+          HttpStatus.BAD_REQUEST,
+        );
         // return 'Contraseña incorrecta';
       }
     }

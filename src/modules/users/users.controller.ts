@@ -11,7 +11,6 @@ export class UsersController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    console.log(createUserDto)
     return this.usersService.create(createUserDto);
   }
 
@@ -38,7 +37,6 @@ export class UsersController {
   // Validar que el usuario exista y validar la contraseña
   @Post('/validateUser')
   validateUser(@Body() validateUserDto: ValidateUserDto) {
-    console.log(validateUserDto);
     return this.usersService.validateUser(validateUserDto);
   }
 }
