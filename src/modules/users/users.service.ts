@@ -63,9 +63,19 @@ export class UsersService {
     return userFound.save();
   }
 
-  async remove(id: number): Promise<void> {
-    const user = await this.findOne(id);
-    await user.destroy();
+  async remove(id: number) {
+    const userFound = await this.findOne(id);
+
+    if (!userFound) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    try {
+      await userFound.destroy();
+      return new HttpException('Usuario elimiando correctamente', HttpStatus.OK);
+    } catch (error) {
+      throw new HttpException('Error interno', HttpStatus.SERVICE_UNAVAILABLE);
+    }
   }
 
   /**
