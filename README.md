@@ -5,26 +5,11 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Simple API RESTful con conexión a base de datos PostgreSQL
 
 ## Installation
 
@@ -58,15 +43,176 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
+## Models
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+Users
+Roles
+UserRoles
+```
 
-## Stay in touch
+## Modules
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+Users
+Roles
+UserRoles
+```
+
+## Common
+
+```typescript
+//AuthGuard
+export class AuthGuard implements CanActivate {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const apikey = process.env.API_KEY;
+    const request = context.switchToHttp().getRequest() as Request;
+
+    if (!request.headers['apikey']) {
+      return false;
+    } else if (request.headers['apikey'] === apikey) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+```
+
+## Security
+
+```typescript
+/**
+ * Enable helmet
+ */
+app.use(helmet());
+```
+
+## Validations
+
+```typescript
+/**
+ * Usar las validaciones que se describen en los dtos para todos los modulos del proyecto
+ * whitelist: true para evitar que se agreguen campos que no se estan esperando
+ */
+app.useGlobalPipes(
+  new ValidationPipe({
+    whitelist: true,
+  }),
+);
+
+/**
+ * DTOs validators
+ */
+
+export class CreateUserDto {
+  @IsString({ message: 'El campo name debe ser un string' })
+  @IsNotEmpty({ message: 'El campo name no debe estar vacío' })
+  @MinLength(4, {
+    message: 'El campo name debe contener al menos 4 caracteres',
+  })
+  name: string;
+
+  @IsEmail(undefined, {
+    message: 'El campo email debe contener una dirección válida',
+  })
+  @IsString({ message: 'El campo email debe ser un string' })
+  @IsNotEmpty({ message: 'El campo email no debe estar vacío' })
+  @MinLength(4, {
+    message: 'El campo email debe contener al menos 4 caracteres',
+  })
+  email: string;
+
+  @IsNotEmpty({ message: 'El campo password no debe estar vacío' })
+  @MinLength(4, {
+    message: 'El campo password debe contener al menos 4 caracteres',
+  })
+  @IsStrongPassword(
+    {
+      minLength: 4,
+      minLowercase: 0,
+      minUppercase: 0,
+      minNumbers: 1,
+      minSymbols: 0,
+    },
+    {
+      message: 'El campo password debe tener al menos 4 caracteres y 1 número',
+    },
+  )
+  password: string;
+  roles?: Role[];
+}
+
+/**
+   * Validar que el usuario exista y validar la contraseña
+   * @param validateUserDto
+   * @returns "Acceso correcto" || "Contraseña incorrecta" || "El usuario no existe"
+   */
+  async validateUser(validateUserDto: ValidateUserDto): Promise<string> {
+    const { email, password } = validateUserDto;
+
+    console.log(email, password);
+
+    const user = await this.userModel.findOne({
+      where: {
+        email,
+      },
+    });
+
+    if (user) {
+      if (await bcrypt.compare(password, user.password)) {
+        return 'Acceso correcto';
+      } else {
+        throw new HttpException(
+          'Contraseña incorrecta',
+          HttpStatus.BAD_REQUEST,
+        );
+        // return 'Contraseña incorrecta';
+      }
+    }
+
+    throw new HttpException('El usuario no existe', HttpStatus.BAD_REQUEST);
+  }
+```
+
+## HttpExceptions
+
+```typescript
+// HttpExceptions - Example
+async remove(id: number): Promise<HttpException> {
+    const userFound = await this.findOne(id);
+
+    if (!userFound) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    try {
+      await userFound.destroy();
+      return new HttpException('Usuario elimiando correctamente', HttpStatus.OK);
+    } catch (error) {
+      throw new HttpException('Error interno', HttpStatus.SERVICE_UNAVAILABLE);
+    }
+  }
+```
+
+## Sequelize config
+
+```typescript
+// Sequilize config - Example using .env file
+SequelizeModule.forRoot({
+      dialect: 'postgres',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT, 10) || 5432,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      autoLoadModels: true,
+      synchronize: true,
+      models: [User, Role, UserRoles],
+    }),
+```
 
 ## License
 
