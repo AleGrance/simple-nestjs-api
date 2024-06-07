@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, MinLength } from "class-validator"
-import { Role } from "src/roles/role.model"
+import { Role } from "src/models/role.model"
 
 export class CreateUserDto {
     @IsString()

@@ -1,6 +1,6 @@
 import { Column, Model, Table, DataType, ForeignKey } from 'sequelize-typescript';
-import { User } from '../users/user.model';
-import { Role } from '../roles/role.model';
+import { User } from './user.model';
+import { Role } from './role.model';
 
 @Table
 export class UserRoles extends Model<UserRoles> {

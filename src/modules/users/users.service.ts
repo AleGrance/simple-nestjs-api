@@ -5,8 +5,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 
 // User model
-import { User } from './user.model';
 import { ValidateUserDto } from './dto/validate-user.dto';
+import { User } from 'src/models/user.model';
 
 @Injectable()
 export class UsersService {

@@ -1,6 +1,6 @@
 // src/roles/role.model.ts
 import { Column, Model, Table, DataType, BelongsToMany } from 'sequelize-typescript';
-import { User } from 'src/users/user.model';
+import { User } from './user.model';
 
 @Table
 export class Role extends Model<Role> {

@@ -12,6 +12,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './models/user.model';
 import { Role } from './models/role.model';
 import { UserRoles } from './models/user-roles.model';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './common/auth/auth.guard';
 
 @Module({
   imports: [
@@ -31,9 +33,9 @@ import { UserRoles } from './models/user-roles.model';
     }),
     UsersModule,
     RolesModule,
-    UserRolesModule
+    UserRolesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [{ provide: APP_GUARD, useClass: AuthGuard }, AppService],
 })
 export class AppModule {}
