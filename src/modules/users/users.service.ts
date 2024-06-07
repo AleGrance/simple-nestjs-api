@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -44,7 +44,11 @@ export class UsersService {
     await user.destroy();
   }
 
-  // Validar que el usuario exista y validar la contraseña
+  /**
+   * Validar que el usuario exista y validar la contraseña
+   * @param validateUserDto 
+   * @returns "Acceso correcto" || "Contraseña incorrecta" || "El usuario no existe"
+   */
   async validateUser(validateUserDto: ValidateUserDto): Promise<string> {
     const { email, password } = validateUserDto;
 
@@ -60,10 +64,11 @@ export class UsersService {
       if (await bcrypt.compare(password, user.password)) {
         return 'Acceso correcto';
       } else {
-        return 'Contraseña incorrecta';
+        throw new HttpException('Contraseña incorrecta', HttpStatus.BAD_REQUEST);
+        // return 'Contraseña incorrecta';
       }
     }
 
-    return 'El usuario no existe';
+    throw new HttpException('El usuario no existe', HttpStatus.BAD_REQUEST);
   }
 }

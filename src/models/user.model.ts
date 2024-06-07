@@ -27,6 +27,10 @@ export class User extends Model<User> {
   @BelongsToMany(() => Role, 'UserRoles', 'userId', 'roleId')
   roles: Role[];
 
+  /**
+   * Encriptar la contraseña del usuario antes de insertar en la tabla
+   * @param user 
+   */
   @BeforeCreate
   @BeforeUpdate
   static async hashPassword(user: User) {

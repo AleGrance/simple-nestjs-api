@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { RolesModule } from './roles/roles.module';
 import { ConfigModule } from '@nestjs/config';
+// Modules
+import { UsersModule } from './modules/users/users.module';
+import { RolesModule } from './modules/roles/roles.module';
+import { UserRolesModule } from './modules/user-roles/user-roles.module';
 // Sequelize
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from './users/user.model';
-import { Role } from './roles/role.model';
-import { UserRoles } from './user-roles/user-roles.model';
-import { UserRolesModule } from './user-roles/user-roles.module';
+// Models
+import { User } from './models/user.model';
+import { Role } from './models/role.model';
+import { UserRoles } from './models/user-roles.model';
 
 @Module({
   imports: [
