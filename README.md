@@ -5,8 +5,6 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-<p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-
 ## Description
 
 Simple API RESTful con conexión a base de datos PostgreSQL
@@ -15,6 +13,13 @@ Simple API RESTful con conexión a base de datos PostgreSQL
 
 ```bash
 $ npm install
+```
+
+## Config DB
+
+```bash
+# Crear la base de datos en el PostgreSQL
+$ CREATE DATABASE nestjs;
 ```
 
 ## Running the app
