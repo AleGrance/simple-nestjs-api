@@ -1,6 +1,8 @@
+import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsString,
   IsStrongPassword,
   MinLength,
@@ -46,5 +48,9 @@ export class CreateUserDto {
     },
   )
   password: string;
+
+  @IsNumber()
+  @Type(() => Number)
+  edad: number
   roles?: Role[];
 }
