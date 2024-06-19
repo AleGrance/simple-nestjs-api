@@ -75,9 +75,11 @@ Agregar la siguiente estructura en el cuerpo `BODY` de la solicitud `POST` para 
 }
 ```
 
-## Models
+##Specs
 
-Los modelos creados utilizando sequelize
+### Models
+
+- Los modelos creados utilizando `sequelize` son los siguientes:
 
 ```bash
 Users
@@ -85,7 +87,7 @@ Roles
 UserRoles
 ```
 
-## Common
+### Common
 
 - `AuthGuard` para validar las cabeceras de las peticiones `HTTP`
 
@@ -112,32 +114,31 @@ export class AuthGuard implements CanActivate {
 providers: [{ provide: APP_GUARD, useClass: AuthGuard }, AppService]
 ```
 
-## Security
+### Security
+
+- Seguridad aplicada a las cabeceras utilizando `helmet`
 
 ```typescript
-/**
- * Enable helmet
- */
+// main.ts
 app.use(helmet());
 ```
 
-## DTOs Validations
+### DTOs Validations
 
- Usar las validaciones de tipado que se describen en los dtos para todos los modulos del proyecto, aplicar `whitelist: true` para evitar que se agreguen campos que no se estan esperando.
+- Usar las validaciones de tipado que se describen en los dtos para todos los modulos del proyecto, se aplica `whitelist: true` para evitar que se agreguen campos que no se estan esperando.
 
 ```typescript
 
-// app.module.ts
+// main.ts
 app.useGlobalPipes(
   new ValidationPipe({
     whitelist: true,
   }),
 );
 
-/**
- * CreateUserDto
- * create-user.dto.ts
- */
+// Ejemplo
+
+//create-user.dto.ts
 
 export class CreateUserDto {
   @IsString({ message: 'El campo name debe ser un string' })
@@ -178,9 +179,9 @@ export class CreateUserDto {
 }
 ```
 
-## Validation Method
+### User Validation Method
 
-Metodo de validación de usuario para logueo u otro tipo de caso de uso necesario
+- Metodo de validación de usuario para logueo u otro tipo de caso de uso necesario.
 
 ```typescript
 /**
@@ -215,9 +216,9 @@ Metodo de validación de usuario para logueo u otro tipo de caso de uso necesari
   }
 ```
 
-## HTTP Request - User validation
+## User Validation Method - HTTP Request
 
-Validar el usuario utilizando el metodo `POST`
+- Validar el usuario utilizando el metodo `POST`
 
 ```bash
 localhost:3000/api/users/validateUser
@@ -231,9 +232,9 @@ Agregar la siguiente estructura en el cuerpo `BODY` de la solicitud `POST` para 
 ```
 
 
-## HttpExceptions
+### HttpExceptions
 
-Manejo de las excepciones HTTP
+- Manejo de las excepciones `HTTP`
 
 ```typescript
 // HttpExceptions - Example
@@ -253,9 +254,9 @@ async remove(id: number): Promise<HttpException> {
   }
 ```
 
-## Sequelize config
+### Sequelize config
 
-Configuración inicial de Sequelize en el módulo principal
+- Configuración inicial de Sequelize en el módulo principal
 
 ```typescript
 //app.module.ts
