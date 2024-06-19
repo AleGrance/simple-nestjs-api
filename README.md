@@ -35,14 +35,8 @@ API_KEY=ABCDFG
 ## Usage
 
 ```bash
-# development
-$ npm run start
-
 # watch mode
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
 ### Header HTTP
@@ -83,13 +77,7 @@ Agregar la siguiente estructura en el cuerpo `BODY` de la solicitud `POST` para 
 
 ## Models
 
-```bash
-Users
-Roles
-UserRoles
-```
-
-## Modules
+Los modelos creados utilizando sequelize
 
 ```bash
 Users
@@ -99,8 +87,10 @@ UserRoles
 
 ## Common
 
+- `AuthGuard` para validar las cabeceras de las peticiones `HTTP`
+
 ```typescript
-//AuthGuard
+//auth.guard.ts
 export class AuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
@@ -117,6 +107,9 @@ export class AuthGuard implements CanActivate {
     }
   }
 }
+
+// app.module.ts
+providers: [{ provide: APP_GUARD, useClass: AuthGuard }, AppService]
 ```
 
 ## Security
@@ -128,13 +121,13 @@ export class AuthGuard implements CanActivate {
 app.use(helmet());
 ```
 
-## Validations
+## DTOs Validations
+
+ Usar las validaciones de tipado que se describen en los dtos para todos los modulos del proyecto, aplicar `whitelist: true` para evitar que se agreguen campos que no se estan esperando.
 
 ```typescript
-/**
- * Usar las validaciones que se describen en los dtos para todos los modulos del proyecto
- * whitelist: true para evitar que se agreguen campos que no se estan esperando
- */
+
+// app.module.ts
 app.useGlobalPipes(
   new ValidationPipe({
     whitelist: true,
@@ -142,7 +135,8 @@ app.useGlobalPipes(
 );
 
 /**
- * DTOs validators
+ * CreateUserDto
+ * create-user.dto.ts
  */
 
 export class CreateUserDto {
@@ -182,7 +176,13 @@ export class CreateUserDto {
   password: string;
   roles?: Role[];
 }
+```
 
+## Validation Method
+
+Metodo de validación de usuario para logueo u otro tipo de caso de uso necesario
+
+```typescript
 /**
    * Validar que el usuario exista y validar la contraseña
    * @param validateUserDto
@@ -215,7 +215,25 @@ export class CreateUserDto {
   }
 ```
 
+## HTTP Request - User validation
+
+Validar el usuario utilizando el metodo `POST`
+
+```bash
+localhost:3000/api/users/validateUser
+```
+Agregar la siguiente estructura en el cuerpo `BODY` de la solicitud `POST` para la validación.
+```json
+{
+    "email": "laura@gmail.com",
+    "password": "abc123"
+}
+```
+
+
 ## HttpExceptions
+
+Manejo de las excepciones HTTP
 
 ```typescript
 // HttpExceptions - Example
@@ -237,8 +255,10 @@ async remove(id: number): Promise<HttpException> {
 
 ## Sequelize config
 
+Configuración inicial de Sequelize en el módulo principal
+
 ```typescript
-// Sequilize config - Example using .env file
+//app.module.ts
 SequelizeModule.forRoot({
       dialect: 'postgres',
       host: process.env.DB_HOST,
