@@ -62,12 +62,12 @@ http://localhost:3000/api/roles
 
 Obtener users utilizando el metodo `GET`
 ```bash
-http://localhost:3000/users
+http://localhost:3000/api/users
 ```
 
 Obtener users paginado utilizando el metodo `POST`. Metodo especialmente utilizado para paginaciones
 ```bash
-http://localhost:3000/usersFiltered
+http://localhost:3000/api/usersFiltered
 ```
 
 Agregar la siguiente estructura en el cuerpo `BODY` de la solicitud `POST` para la paginación.
