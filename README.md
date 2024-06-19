@@ -39,7 +39,7 @@ API_KEY=ABCDFG
 $ npm run start:dev
 ```
 
-### Header HTTP
+## Header HTTP
 
 Agregar el apikey en el header de cada solicitud. El `apikey` puede ser modificado si así lo desea
 
@@ -47,7 +47,7 @@ Agregar el apikey en el header de cada solicitud. El `apikey` puede ser modifica
 apikey: abc123
 ```
 
-### Metodos HTTP
+## Metodos HTTP
 
 Obtener roles utilizando el metodo `GET`
 ```bash
