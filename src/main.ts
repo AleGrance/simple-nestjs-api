@@ -19,6 +19,9 @@ async function bootstrap() {
     whitelist: true
   }));
 
+  // Se agrega el prefijo api/
+  app.setGlobalPrefix('api');
+
   /**
    * Enable cors
    */
