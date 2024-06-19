@@ -8,6 +8,10 @@ import * as bcrypt from 'bcrypt';
 import { ValidateUserDto } from './dto/validate-user.dto';
 import { User } from 'src/models/user.model';
 import { NotFoundError } from 'rxjs';
+import { FilterUserDto } from './dto/filter-user.dto';
+
+// Seque
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -130,5 +134,59 @@ export class UsersService {
     }
 
     throw new HttpException('El usuario no existe', HttpStatus.BAD_REQUEST);
+  }
+
+  async findAllFiltered(filterUserDto: FilterUserDto): Promise<any> {
+    try {
+      var search_keyword = filterUserDto.search.value
+        .replace(/[^a-zA-Z 0-9.]+/g, '')
+        .split(' ');
+
+      const counts = await this.userModel.count();
+
+      var condition = [];
+
+      for (var searchable of search_keyword) {
+        if (searchable !== '') {
+          condition.push({
+            name: {
+              [Op.iLike]: `%${searchable}%`,
+            },
+          });
+        }
+      }
+
+      var result = {
+        data: [],
+        recordsTotal: 0,
+        recordsFiltered: 0,
+      };
+
+      if (!counts) {
+        return result;
+      }
+
+      result.recordsTotal = counts;
+
+      const response = await this.userModel.findAndCountAll({
+        offset: filterUserDto.start,
+        limit: filterUserDto.length,
+        where: {
+          [Op.or]:
+            condition.length > 0 ? condition : [{ name: { [Op.iLike]: '%%' } }],
+        },
+        attributes: {
+          exclude: ['password'],
+        },
+        order: [['name', 'DESC']],
+      });
+
+      result.recordsFiltered = response.count;
+      result.data = response.rows;
+      return result;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
   }
 }
