@@ -75,7 +75,7 @@ Agregar la siguiente estructura en el cuerpo `BODY` de la solicitud `POST` para 
 }
 ```
 
-##Specs
+## Specs
 
 ### Models
 
@@ -216,7 +216,7 @@ export class CreateUserDto {
   }
 ```
 
-## User Validation Method - HTTP Request
+### User Validation Method - HTTP Request
 
 - Validar el usuario utilizando el metodo `POST`
 
