@@ -18,7 +18,7 @@ npm install
 - Instalar `PostgreSQL`
 - Crear la base de datos a utilizar
 
-## Config I
+## Config
 
 Crear el archivo `.ENV` en la raiz del proyecto y agregar los siguientes datos
 
@@ -32,7 +32,7 @@ DB_PORT=5432
 API_KEY=ABCDFG
 ```
 
-## Usage I
+## Usage
 
 ```bash
 # development
