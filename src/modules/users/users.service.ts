@@ -12,6 +12,7 @@ import { FilterUserDto } from './dto/filter-user.dto';
 
 // Seque
 import { Op } from 'sequelize';
+import { FilteredUserDto } from './dto/filtered-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -136,7 +137,7 @@ export class UsersService {
     throw new HttpException('El usuario no existe', HttpStatus.BAD_REQUEST);
   }
 
-  async findAllFiltered(filterUserDto: FilterUserDto): Promise<any> {
+  async findAllFiltered(filterUserDto: FilterUserDto): Promise<FilteredUserDto> {
     try {
       var search_keyword = filterUserDto.search.value
         .replace(/[^a-zA-Z 0-9.]+/g, '')
