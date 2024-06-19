@@ -4,24 +4,35 @@
 
 # Simple Nestjs API
 
-## Description
+Simple Nestjs API fue creado usando NestJS, Express, Sequelize y PostgreSQL
 
-Simple API RESTful con conexión a base de datos PostgreSQL
+## Installation I
 
-## Installation
-
-```bash
-$ npm install
-```
-
-## Config DB
+Clonar el repositorio y ejecutar `npm install` en la carpeta raiz del proyecto
 
 ```bash
-# Crear la base de datos en el PostgreSQL
-$ CREATE DATABASE nestjs;
+npm install
+```
+## Installation II
+
+- Instalar `PostgreSQL`
+- Crear la base de datos a utilizar
+
+## Config I
+
+Crear el archivo `.ENV` en la raiz del proyecto y agregar los siguientes datos
+
+```conf
+DB_NAME=nombre_de_la_base
+DB_USER=user_de_la_base
+DB_PASSWORD=password_de_la_base
+DB_HOST=localhost
+DB_PORT=5432
+
+API_KEY=ABCDFG
 ```
 
-## Running the app
+## Usage I
 
 ```bash
 # development
@@ -34,17 +45,40 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+### Header HTTP
+
+Agregar el apikey en el header de cada solicitud. El `apikey` puede ser modificado si así lo desea
 
 ```bash
-# unit tests
-$ npm run test
+apikey: abc123
+```
 
-# e2e tests
-$ npm run test:e2e
+### Metodos HTTP
 
-# test coverage
-$ npm run test:cov
+Obtener roles utilizando el metodo `GET`
+```bash
+http://localhost:3000/api/roles
+```
+
+Obtener users utilizando el metodo `GET`
+```bash
+http://localhost:3000/users
+```
+
+Obtener users paginado utilizando el metodo `POST`. Metodo especialmente utilizado para paginaciones
+```bash
+http://localhost:3000/usersFiltered
+```
+
+Agregar la siguiente estructura en el cuerpo `BODY` de la solicitud `POST` para la paginación.
+```json
+{
+    "search": {
+        "value": "ale"
+    },
+    "start": 0,
+    "length": 10
+}
 ```
 
 ## Models
@@ -217,7 +251,5 @@ SequelizeModule.forRoot({
       models: [User, Role, UserRoles],
     }),
 ```
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+## Author
+Alejandro Grance
