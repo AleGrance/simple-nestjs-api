@@ -11,14 +11,7 @@ export class AuthService {
   ) {}
 
   async signIn(validateUserDto: ValidateUserDto): Promise<any> {
-    // const user = await this.userModel.findOne({ where: { name: username } });
     const user = await this.usersService.validateUser(validateUserDto);
-
-    // if (user?.password !== validateUserDto.password) {
-    //   throw new UnauthorizedException();
-    // }
-
-    // const { password, ...result } = user;
 
     const payload = { sub: user.userId, username: user.name };
 

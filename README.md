@@ -75,6 +75,38 @@ Agregar la siguiente estructura en el cuerpo `BODY` de la solicitud `POST` para 
 }
 ```
 
+Obtener token y validar usuario enviando las credenciales del usuario utilizando el metodo `POST`.
+```bash
+http://localhost:3000/api/auth/login
+```
+
+Agregar la siguiente estructura en el cuerpo `BODY` de la solicitud `POST` para el login.
+```json
+{
+    "email": "yo@gmail.com",
+    "password": "abc123"
+}
+```
+Respuesta de la API en caso de éxito
+
+```json
+{
+    "access_token": "eltoken"
+}
+```
+
+Respuesta de la API en caso de fallo.
+```json
+{
+    "statusCode": 400,
+    "message": "El usuario no existe"
+}
+{
+    "statusCode": 400,
+    "message": "Contraseña incorrecta"
+}
+```
+
 ## Specs
 
 ### Models

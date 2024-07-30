@@ -113,8 +113,6 @@ export class UsersService {
   async validateUser(validateUserDto: ValidateUserDto): Promise<any> {
     const { email, password } = validateUserDto;
 
-    console.log(email, password);
-
     const user = await this.userModel.findOne({
       where: {
         email,
@@ -129,14 +127,15 @@ export class UsersService {
           'Contraseña incorrecta',
           HttpStatus.BAD_REQUEST,
         );
-        // return 'Contraseña incorrecta';
       }
     }
 
     throw new HttpException('El usuario no existe', HttpStatus.BAD_REQUEST);
   }
 
-  async findAllFiltered(filterUserDto: FilterUserDto): Promise<FilteredUserDto> {
+  async findAllFiltered(
+    filterUserDto: FilterUserDto,
+  ): Promise<FilteredUserDto> {
     try {
       var search_keyword = filterUserDto.search.value
         .replace(/[^a-zA-Z 0-9.]+/g, '')
