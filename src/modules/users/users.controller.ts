@@ -6,13 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ValidateUserDto } from './dto/validate-user.dto';
-import { ValidateUserPipe } from 'src/pipes/validate-user/validate-user.pipe';
 import { FilterUserDto } from './dto/filter-user.dto';
+import { AuthGuard } from 'src/common/auth/auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -23,6 +23,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(AuthGuard) // Guard con token y apikey
   @Get()
   findAll() {
     return this.usersService.findAll();
@@ -50,8 +51,8 @@ export class UsersController {
   }
 
   // Validar que el usuario exista y validar la contraseña
-  @Post('/validateUser')
-  validateUser(@Body() validateUserDto: ValidateUserDto) {
-    return this.usersService.validateUser(validateUserDto);
-  }
+  // @Post('/validateUser')
+  // validateUser(@Body() validateUserDto: ValidateUserDto) {
+  //   return this.usersService.validateUser(validateUserDto);
+  // }
 }

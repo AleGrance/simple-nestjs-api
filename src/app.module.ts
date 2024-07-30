@@ -14,6 +14,10 @@ import { Role } from './models/role.model';
 import { UserRoles } from './models/user-roles.model';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/auth/auth.guard';
+import { AuthModule } from './modules/auth/auth.module';
+import { AuthService } from './modules/auth/auth.service';
+import { AuthController } from './modules/auth/auth.controller';
+import { jwtConstants } from './modules/auth/constants';
 
 @Module({
   imports: [
@@ -34,8 +38,13 @@ import { AuthGuard } from './common/auth/auth.guard';
     UsersModule,
     RolesModule,
     UserRolesModule,
+    AuthModule
   ],
-  controllers: [AppController],
-  providers: [{ provide: APP_GUARD, useClass: AuthGuard }, AppService],
+  controllers: [AppController, AuthController],
+  providers: [
+    // { provide: APP_GUARD, useClass: AuthGuard },
+    AppService,
+    AuthService,
+  ],
 })
 export class AppModule {}

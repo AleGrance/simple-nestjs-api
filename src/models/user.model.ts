@@ -6,6 +6,13 @@ import { Role } from './role.model';
 @Table
 export class User extends Model<User> {
   @Column({
+    type: DataType.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  })
+  userId: number;
+  
+  @Column({
     type: DataType.STRING,
     allowNull: false,
   })

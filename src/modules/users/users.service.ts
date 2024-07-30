@@ -7,7 +7,6 @@ import * as bcrypt from 'bcrypt';
 // User model
 import { ValidateUserDto } from './dto/validate-user.dto';
 import { User } from 'src/models/user.model';
-import { NotFoundError } from 'rxjs';
 import { FilterUserDto } from './dto/filter-user.dto';
 
 // Seque
@@ -111,7 +110,7 @@ export class UsersService {
    * @param validateUserDto
    * @returns "Acceso correcto" || "Contraseña incorrecta" || "El usuario no existe"
    */
-  async validateUser(validateUserDto: ValidateUserDto): Promise<string> {
+  async validateUser(validateUserDto: ValidateUserDto): Promise<any> {
     const { email, password } = validateUserDto;
 
     console.log(email, password);
@@ -124,7 +123,7 @@ export class UsersService {
 
     if (user) {
       if (await bcrypt.compare(password, user.password)) {
-        return 'Acceso correcto';
+        return user;
       } else {
         throw new HttpException(
           'Contraseña incorrecta',
