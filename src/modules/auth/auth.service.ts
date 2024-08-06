@@ -10,6 +10,7 @@ export class AuthService {
     private usersService: UsersService,
   ) {}
 
+  // Genera y retorna el token
   async signIn(validateUserDto: ValidateUserDto): Promise<any> {
     const user = await this.usersService.validateUser(validateUserDto);
 

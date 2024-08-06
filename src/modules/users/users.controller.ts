@@ -23,7 +23,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @UseGuards(AuthGuard) // Guard con token y apikey
+  // @UseGuards(AuthGuard) // Guard con token y apikey
   @Get()
   findAll() {
     return this.usersService.findAll();

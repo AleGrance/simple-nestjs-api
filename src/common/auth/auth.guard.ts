@@ -17,6 +17,7 @@ export class AuthGuard implements CanActivate {
     const apikey = process.env.API_KEY;
     const request = context.switchToHttp().getRequest() as Request;
 
+    // Valida el token
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();
@@ -33,6 +34,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
+    // Valida el apikey
     if (!request.headers['apikey']) {
       return false;
     } else if (request.headers['apikey'] === apikey) {

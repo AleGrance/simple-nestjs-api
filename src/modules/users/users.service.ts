@@ -42,7 +42,7 @@ export class UsersService {
   async findOne(id: number): Promise<User> {
     const userFound = await this.userModel.findOne({
       where: {
-        id,
+        userId: id,
       },
       attributes: { exclude: ['password'] },
     });
@@ -60,8 +60,16 @@ export class UsersService {
   ): Promise<HttpException> {
     const userFound = await this.findOne(id);
 
-    if (!userFound) {
-      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    // Comparar los valores proporcionados con los valores actuales
+    const hasChanges = ['name', 'email', 'password'].some(key => {
+      return updateUserDto[key] && updateUserDto[key] !== userFound[key];
+    });
+
+    if (!hasChanges) {
+      throw new HttpException(
+        'Ningún campo ha cambiado',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     if (updateUserDto.name) {
