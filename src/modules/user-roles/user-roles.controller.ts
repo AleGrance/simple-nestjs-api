@@ -1,6 +1,8 @@
-import { Controller, Post, Delete, Param, Body, Get } from '@nestjs/common';
+import { Controller, Post, Delete, Param, Body, Get, UseGuards } from '@nestjs/common';
 import { UserRolesService } from './user-roles.service';
+import { AuthGuard } from 'src/common/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('user-roles')
 export class UserRolesController {
   constructor(private readonly userRolesService: UserRolesService) {}

@@ -45,6 +45,10 @@ import { jwtConstants } from './modules/auth/constants';
     // { provide: APP_GUARD, useClass: AuthGuard },
     AppService,
     AuthService,
+    {
+      provide: 'UserRepository',
+      useValue: User,
+    },
   ],
 })
 export class AppModule {}

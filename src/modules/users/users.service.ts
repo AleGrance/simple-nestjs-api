@@ -118,28 +118,28 @@ export class UsersService {
    * @param validateUserDto
    * @returns "Acceso correcto" || "Contraseña incorrecta" || "El usuario no existe"
    */
-  async validateUser(validateUserDto: ValidateUserDto): Promise<any> {
-    const { email, password } = validateUserDto;
+  // async validateUser(validateUserDto: ValidateUserDto): Promise<any> {
+  //   const { email, password } = validateUserDto;
 
-    const user = await this.userModel.findOne({
-      where: {
-        email,
-      },
-    });
+  //   const user = await this.userModel.findOne({
+  //     where: {
+  //       email,
+  //     },
+  //   });
 
-    if (user) {
-      if (await bcrypt.compare(password, user.password)) {
-        return user;
-      } else {
-        throw new HttpException(
-          'Contraseña incorrecta',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    }
+  //   if (user) {
+  //     if (await bcrypt.compare(password, user.password)) {
+  //       return user;
+  //     } else {
+  //       throw new HttpException(
+  //         'Contraseña incorrecta',
+  //         HttpStatus.BAD_REQUEST,
+  //       );
+  //     }
+  //   }
 
-    throw new HttpException('El usuario no existe', HttpStatus.BAD_REQUEST);
-  }
+  //   throw new HttpException('El usuario no existe', HttpStatus.BAD_REQUEST);
+  // }
 
   async findAllFiltered(
     filterUserDto: FilterUserDto,
