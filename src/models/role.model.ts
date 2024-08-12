@@ -1,4 +1,3 @@
-// src/roles/role.model.ts
 import { Column, Model, Table, DataType, BelongsToMany } from 'sequelize-typescript';
 import { User } from './user.model';
 

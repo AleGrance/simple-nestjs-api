@@ -72,20 +72,11 @@ export class UsersService {
       );
     }
 
-    if (updateUserDto.name) {
-      userFound.name = updateUserDto.name;
-    }
-
-    if (updateUserDto.email) {
-      userFound.email = updateUserDto.email;
-    }
-
-    if (updateUserDto.password) {
-      userFound.password = updateUserDto.password;
-    }
-
     try {
-      userFound.save();
+      await this.userModel.update(updateUserDto, {
+        where: { userId: id },
+      });
+      
       return new HttpException(
         'Usuario actualizado correctamente',
         HttpStatus.OK,
