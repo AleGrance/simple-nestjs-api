@@ -20,9 +20,11 @@ export class UsersService {
     private userModel: typeof User,
   ) {}
 
-  async create(user: CreateUserDto): Promise<User> {
+  async create(user: CreateUserDto): Promise<HttpException> {
     try {
-      return await this.userModel.create(user);
+      await this.userModel.create(user);
+
+      return new HttpException('Usuario creado correctamente', HttpStatus.OK);
     } catch (error) {
       if (error.name === 'SequelizeUniqueConstraintError') {
         throw new HttpException(
@@ -61,7 +63,7 @@ export class UsersService {
     const userFound = await this.findOne(id);
 
     // Comparar los valores proporcionados con los valores actuales
-    const hasChanges = ['name', 'email', 'password'].some(key => {
+    const hasChanges = ['name', 'email', 'password'].some((key) => {
       return updateUserDto[key] && updateUserDto[key] !== userFound[key];
     });
 
@@ -73,10 +75,20 @@ export class UsersService {
     }
 
     try {
-      await this.userModel.update(updateUserDto, {
-        where: { userId: id },
-      });
-      
+      // Actualizar los valores directamente en el modelo
+      if (updateUserDto.name) {
+        userFound.name = updateUserDto.name;
+      }
+      if (updateUserDto.email) {
+        userFound.email = updateUserDto.email;
+      }
+      if (updateUserDto.password) {
+        userFound.password = updateUserDto.password;
+      }
+
+      // Guardar el usuario con los nuevos valores, disparando los hooks
+      await userFound.save();
+
       return new HttpException(
         'Usuario actualizado correctamente',
         HttpStatus.OK,
